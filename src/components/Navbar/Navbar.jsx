@@ -23,7 +23,7 @@ function Navbar() {
           <div>
             <Link to="/">
               <img
-                className="disney-img"
+                className="PRO-img"
                 src={logo}
                 alt="logo"
               />
@@ -34,7 +34,7 @@ function Navbar() {
             <Link className="link" to="/tv">TV</Link>
             <ul>
               <li><Link to="/tv/en/individual">Other Shows</Link></li>
-              <li><Link to="/tv/hi/individual">Hotstar Specials</Link></li>
+              <li><Link to="/tv/hi/individual">mh27ott Specials</Link></li>
               <li><Link to="/tv/te/individual">Star Plus</Link></li>
               <li><Link to="/tv/ml/individual">Star Vijay</Link></li>
               <li><Link to="/tv/ta/individual">Asianet</Link></li>
@@ -67,7 +67,7 @@ function Navbar() {
           </div>
 
           <div className="small">
-            <Link to="/disney+">Disney+</Link>
+            <Link to="/PRO+">PRO+</Link>
           </div>
         </div>
 

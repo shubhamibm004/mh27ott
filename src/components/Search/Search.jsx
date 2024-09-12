@@ -41,7 +41,7 @@ export const Search = () => {
       <div className="searchinput">
         <input 
           onInput={(e) => setText(e.target.value)}
-          className="hotstarSearch"
+          className="mh27ottSearch"
           type="text"
           placeholder="Search"
         />
