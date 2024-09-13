@@ -29,7 +29,7 @@ export default function Login() {
       const result = await response.json();
       if (response.ok) {
         localStorage.setItem('token', result.token);
-        navigate('/dashboard');
+        navigate('/watchlist');
       } else {
         setMessage(result.message || 'Login failed');
       }
