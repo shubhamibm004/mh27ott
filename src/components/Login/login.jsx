@@ -45,7 +45,7 @@ export default function Login() {
         if (decoded.is_admin) {
           navigate('/admin/dashboard'); // Redirect to admin dashboard
         } else {
-          navigate('/watchlist'); // Redirect to user watchlist
+          navigate('/'); // Redirect to user watchlist
         }
       } else {
         setMessage(result.message || 'Login failed');
