@@ -1,136 +1,145 @@
 import "./Banner.css";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
-import PlaylistAddRoundedIcon from "@mui/icons-material/PlaylistAddRounded";
 import ShareRoundedIcon from "@mui/icons-material/ShareRounded";
 import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
-import axios from "axios";
-import {useEffect} from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-function Banner({original_title, title, year, genre, description, img, idm, mediaType }) {
-  const[Status,setStatus]=useState(false);
-  const[wishid,setWishid]=useState("");
-  const {id, category} = useParams();
-  const [ wishdata , setWishData ] = useState([])
+function Banner({ original_title, title, year, genre, description, img, idm, mediaType }) {
+  const [status, setStatus] = useState(false);
+  const [wishId, setWishId] = useState("");
+  const [wishData, setWishData] = useState([]);
+  const { id, category } = useParams();
+  
+  const token = localStorage.getItem('token'); // Retrieve the JWT token directly
 
-  async function getWishlist(){
-    const user = localStorage.getItem('user')
-    const {token} = JSON.parse(user)
-    // const a = await fetch('http://localhost:5000/watchlist',{
-    const a = await fetch('http://localhost:5000/watchlist',{
-        method : "GET",
-        headers : {
-          "content-type" : "application/json",
-          Authentication : `Bearer ${token}`
+  async function getWishlist() {
+    if (!token) return;
+
+    try {
+      const response = await fetch('http://localhost:5000/watchlist', {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token // Use JWT token directly
         }
-      })
-      const b = await a.json()
-      setWishData(b);
-    }
-useEffect(()=>{ getWishlist()},[])
+      });
 
-useEffect(()=>{
-  for(let i=0;i<wishdata.length;i++){
-    if(original_title==wishdata[i].title){
+      if (!response.ok) throw new Error('Network response was not ok');
+
+      const result = await response.json();
+      setWishData(result);
+    } catch (error) {
+      console.error("Failed to fetch watchlist:", error);
+    }
+  }
+
+  useEffect(() => {
+    getWishlist();
+  }, [token]);
+
+  useEffect(() => {
+    const item = wishData.find(item => item.title === original_title);
+    if (item) {
       setStatus(true);
-      setWishid(wishdata[i]._id)
+      setWishId(item._id);
+    } else {
+      setStatus(false);
+      setWishId("");
     }
-  }
-},[wishdata]);
+  }, [wishData, original_title]);
 
-useEffect(()=>{
-  setStatus(false)
-},[id]);
+  useEffect(() => {
+    setStatus(false);
+  }, [id]);
 
+  async function addWatchList() {
+    if (!token) {
+      alert('Please SignIn to add this movie to your watchlist');
+      return;
+    }
 
-  async function addWatchList(){
-    setStatus(true);
-    const user = localStorage.getItem('user')
-    if(user)
-    {
-      const {token} = JSON.parse(user)
-      // const a = await fetch('http://localhost:5000/watchlist',{
-      const a = await fetch('http://localhost:5000/watchlist',{
-        method : "POST",
-        body : JSON.stringify({
-          id:id,
-          imageUrl : img,
-          title :title,
-          overview : description
+    try {
+      const response = await fetch('http://localhost:5000/watchlist', {
+        method: "POST",
+        body: JSON.stringify({
+          id,
+          imageUrl: img,
+          title,
+          overview: description
         }),
-        headers : {
-          "content-type" : "application/json",
-          Authentication : `Bearer ${token}`
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token // Use JWT token directly
         }
       });
-      
-      const b = await a.json()
-      setWishid(b._id)
-      setStatus(true)
-    }
-    else
-      {
-        alert('Please SignIn to add this movie in your watchlist')
-      }
 
+      if (!response.ok) throw new Error('Failed to add to watchlist');
+
+      const result = await response.json();
+      setWishId(result._id);
+      setStatus(true);
+    } catch (error) {
+      console.error("Failed to add to watchlist:", error);
+    }
   }
 
-   async function deleteWatchList(){
-     setStatus(false);
-    {
-      // const a = await fetch(`http://localhost:5000/watchlist/${wishid}`,{
-      const a = await fetch(`http://localhost:5000/watchlist/${wishid}`,{
-      
-        method : "DELETE",
+  async function deleteWatchList() {
+    if (!wishId) return;
+
+    try {
+      const response = await fetch(`http://localhost:5000/watchlist/${wishId}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": token // Use JWT token directly
+        }
       });
+
+      if (!response.ok) throw new Error('Failed to remove from watchlist');
+
+      setStatus(false);
+      setWishId("");
+    } catch (error) {
+      console.error("Failed to delete from watchlist:", error);
     }
   }
 
   return (
-    <Link  to={ mediaType=="tv"? `/tv/${idm}`:`/movie/${idm || id}`}>
+    <Link to={mediaType === "tv" ? `/tv/${idm}` : `/movie/${idm || id}`}>
       <div className="banner-container">
         <div className="banner-left">
           <div className="banner-details">
             <h1>{title}</h1>
             <div id="genre">
-              <span> {genre}</span>
+              <span>{genre}</span>
             </div>
             <p className="banner-descr">{description}</p>
           </div>
-          {id ? (
+          {id && (
             <div className="btns">
               <Link to={`/${category}/${id}/video`}>
-              <div >
-                <PlayArrowRoundedIcon
-                  fontSize="large"
-                  className="play-icon"
-                ></PlayArrowRoundedIcon>
-
-                <h2>Watch Movie</h2>
-              </div>
+                <div>
+                  <PlayArrowRoundedIcon fontSize="large" className="play-icon" />
+                  <h2>Watch Movie</h2>
+                </div>
               </Link>
               <div>
-                <div className="playlist-btn">
-                  {Status?<CheckIcon className="checkIcon" onClick={deleteWatchList} fontSize="large"></CheckIcon>:<AddIcon onClick={addWatchList} fontSize="large"></AddIcon>}
+                <div className="playlist-btn" onClick={status ? deleteWatchList : addWatchList}>
+                  {status ? <CheckIcon className="checkIcon" fontSize="large" /> : <AddIcon fontSize="large" />}
                   watchlist
                 </div>
                 <div>
-                  <ShareRoundedIcon ></ShareRoundedIcon>
+                  <ShareRoundedIcon />
                   share
                 </div>
               </div>
             </div>
-          ) : (
-            ""
           )}
         </div>
         <div
           className="banner-right"
-          style={{
-            backgroundImage: `url(${img})`,
-          }}
+          style={{ backgroundImage: `url(${img})` }}
         >
           <div></div>
         </div>

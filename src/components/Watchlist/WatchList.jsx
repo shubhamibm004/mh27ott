@@ -8,25 +8,41 @@ export function WatchList() {
     const [error, setError] = useState(null);
 
     async function getWishlist() {
-        const user = JSON.parse(localStorage.getItem('user'));
-        if (!user || !user.token) {
-            setError('User not authenticated');
+        const token = localStorage.getItem('token'); // Retrieve the token from local storage
+        const user = localStorage.getItem('user'); // Retrieve the user data from local storage
+
+        if (!token || !user) {
+            setError('User not authenticated or user data is missing');
+            setLoading(false);
+            return;
+        }
+
+        let userId;
+        try {
+            const parsedUser = JSON.parse(user);
+            userId = parsedUser.id;
+            if (!userId) {
+                throw new Error('User ID is missing');
+            }
+        } catch (error) {
+            setError('Invalid user data');
             setLoading(false);
             return;
         }
 
         try {
             const response = await fetch('http://localhost:5000/watchlist', {
-                method: "POST",  // Changed to POST as per backend requirement
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${user.token}`
+                    "Authorization": `Bearer ${token}` // Use the token retrieved from local storage
                 },
-                body: JSON.stringify({ user_id: user.id })  // Include user_id in the request body
+                body: JSON.stringify({ user_id: userId }) // Include user_id in the request body
             });
 
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                const errorMessage = await response.text();
+                throw new Error(errorMessage || 'Network response was not ok');
             }
 
             const result = await response.json();
@@ -49,7 +65,19 @@ export function WatchList() {
         <div>
             <h3>Watchlist</h3>
             <div className="watchListRes">
-                {data.map(el => <Card key={el.id} id={el.id} title={el.title} description={el.description} imageUrl={el.imageUrl} />)}
+                {data.length > 0 ? (
+                    data.map(el => (
+                        <Card
+                            key={el.id}
+                            id={el.id}
+                            title={el.title}
+                            description={el.description}
+                            imageUrl={el.imageUrl}
+                        />
+                    ))
+                ) : (
+                    <p>No items in your watchlist</p>
+                )}
             </div>
         </div>
     );

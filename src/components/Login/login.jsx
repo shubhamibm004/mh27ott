@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // Correct import statement
 import './login.css'; // Import the new CSS file
 
 export default function Login() {
@@ -28,8 +29,24 @@ export default function Login() {
 
       const result = await response.json();
       if (response.ok) {
-        localStorage.setItem('token', result.token);
-        navigate('/watchlist');
+        const { token } = result;
+        localStorage.setItem('token', token);
+
+        // Decode token to get user info
+        const decoded = jwtDecode(token);
+
+        // Store user info in localStorage
+        localStorage.setItem('user', JSON.stringify({
+          id: decoded.id,
+          email: decoded.email,
+          is_admin: decoded.is_admin
+        }));
+
+        if (decoded.is_admin) {
+          navigate('/admin/dashboard'); // Redirect to admin dashboard
+        } else {
+          navigate('/watchlist'); // Redirect to user watchlist
+        }
       } else {
         setMessage(result.message || 'Login failed');
       }

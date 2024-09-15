@@ -9,12 +9,14 @@ export default function SignUp() {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
 
+  // Validation schema with optional role field
   const validationSchema = Yup.object().shape({
     username: Yup.string().required('Username is required'),
     email: Yup.string().required('Email is required').email('Email is invalid'),
     password: Yup.string()
       .required('Password is required')
       .min(6, 'Password must be at least 6 characters'),
+    role: Yup.string().oneOf(['User', 'Admin'], 'Invalid role selected'),
   });
 
   const { register, handleSubmit, formState: { errors } } = useForm({
@@ -77,6 +79,18 @@ export default function SignUp() {
               className={`${errors.password ? 'border-red-500' : ''}`}
             />
             {errors.password && <div className="errorLabel">{errors.password.message}</div>}
+          </div>
+
+          <div className="inputContainer">
+            <label>Role</label>
+            <select
+              {...register('role')}
+              className={`${errors.role ? 'border-red-500' : ''}`}
+            >
+              <option value="User">User</option>
+              <option value="Admin">Admin</option>
+            </select>
+            {errors.role && <div className="errorLabel">{errors.role.message}</div>}
           </div>
 
           <div className="inputContainer">

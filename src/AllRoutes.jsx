@@ -8,6 +8,7 @@ import { WatchList } from "./components/Watchlist/WatchList";
 import {Profile} from "./components/Profile/Profile"
 import Login from "./components/Login/login";
 import SignUp from "./components/Login/signup";
+import AdminDashboard from "./components/Login/AdminDashboard";
 
 function AllRoutes() {
   return (
@@ -19,11 +20,13 @@ function AllRoutes() {
         <Route path="/dashboard" element={<Profile/>}></Route>
         <Route path="/signup" element={<SignUp/>}></Route>
         <Route path="/:category" element={<MainPage ></MainPage>} ></Route>
+        <Route path="/admin/dashboard" element={<AdminDashboard/>}></Route>
         {/* <Route path="/:category/:language" element={<MainPage ></MainPage>} ></Route> */}
         <Route  path={`/:category/:id`}  element={<IndividualPage  ></IndividualPage>} ></Route>
         <Route path="/:category/:id/video" element={<VideoPage></VideoPage>}></Route>
         <Route path="/watchlist" element={<WatchList/>}></Route>
         <Route path="/profile" element={<Profile/>}></Route>
+
       </Routes>
       <Footer></Footer>
     </>
