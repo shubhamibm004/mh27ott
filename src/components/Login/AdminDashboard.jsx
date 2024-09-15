@@ -6,7 +6,7 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [movies, setMovies] = useState([]);
   const [newUser, setNewUser] = useState({ username: '', email: '', password: '', roles: 'User' });
-  const [newMovie, setNewMovie] = useState({ title: '', imageUrl: '', overview: '' });
+  const [newMovie, setNewMovie] = useState({ title: '', poster_path: '', overview: '', release_date: '', language: '', popularity: '', vote_average: '' });
   const [activeTab, setActiveTab] = useState('addUser');
   const navigate = useNavigate();
 
@@ -193,14 +193,40 @@ export default function AdminDashboard() {
             />
             <input
               type="text"
-              placeholder="Image URL"
-              value={newMovie.imageUrl}
-              onChange={(e) => setNewMovie({ ...newMovie, imageUrl: e.target.value })}
+              placeholder="Poster Path"
+              value={newMovie.poster_path}
+              onChange={(e) => setNewMovie({ ...newMovie, poster_path: e.target.value })}
             />
             <textarea
               placeholder="Overview"
               value={newMovie.overview}
               onChange={(e) => setNewMovie({ ...newMovie, overview: e.target.value })}
+            />
+            <input
+              type="date"
+              placeholder="Release Date"
+              value={newMovie.release_date}
+              onChange={(e) => setNewMovie({ ...newMovie, release_date: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Language"
+              value={newMovie.language}
+              onChange={(e) => setNewMovie({ ...newMovie, language: e.target.value })}
+            />
+            <input
+              type="number"
+              step="0.1"
+              placeholder="Popularity"
+              value={newMovie.popularity}
+              onChange={(e) => setNewMovie({ ...newMovie, popularity: e.target.value })}
+            />
+            <input
+              type="number"
+              step="0.1"
+              placeholder="Vote Average"
+              value={newMovie.vote_average}
+              onChange={(e) => setNewMovie({ ...newMovie, vote_average: e.target.value })}
             />
             <button onClick={handleAddMovie}>Add Movie</button>
           </div>
@@ -212,7 +238,7 @@ export default function AdminDashboard() {
             <ul>
               {movies.map((movie) => (
                 <li key={movie.id}>
-                  {movie.title}
+                  {movie.title} ({movie.release_date}) - {movie.language} - Popularity: {movie.popularity} - Vote Average: {movie.vote_average}
                   <button onClick={() => handleRemoveMovie(movie.id)}>Remove</button>
                 </li>
               ))}
