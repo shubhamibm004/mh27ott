@@ -9,6 +9,7 @@ import {Profile} from "./components/Profile/Profile"
 import Login from "./components/Login/login";
 import SignUp from "./components/Login/signup";
 import AdminDashboard from "./components/Login/AdminDashboard";
+import EmailVerified from "./components/Login/emailVerified";
 
 function AllRoutes() {
   return (
@@ -21,6 +22,7 @@ function AllRoutes() {
         <Route path="/signup" element={<SignUp/>}></Route>
         <Route path="/:category" element={<MainPage ></MainPage>} ></Route>
         <Route path="/admin/dashboard" element={<AdminDashboard/>}></Route>
+        <Route path="/emailverified" element={<EmailVerified />} />
         {/* <Route path="/:category/:language" element={<MainPage ></MainPage>} ></Route> */}
         <Route  path={`/:category/:id`}  element={<IndividualPage  ></IndividualPage>} ></Route>
         <Route path="/:category/:id/video" element={<VideoPage></VideoPage>}></Route>

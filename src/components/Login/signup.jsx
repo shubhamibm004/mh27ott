@@ -84,13 +84,13 @@ export default function SignUp() {
           <div className="inputContainer">
             <label>Role</label>
             <select
-              {...register('role')}
-              className={`${errors.role ? 'border-red-500' : ''}`}
+              {...register('roles')}
+              className={`${errors.roles ? 'border-red-500' : ''}`}
             >
               <option value="User">User</option>
               <option value="Admin">Admin</option>
             </select>
-            {errors.role && <div className="errorLabel">{errors.role.message}</div>}
+            {errors.roles && <div className="errorLabel">{errors.roles.message}</div>}
           </div>
 
           <div className="inputContainer">

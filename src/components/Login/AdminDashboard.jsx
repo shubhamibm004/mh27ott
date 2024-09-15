@@ -5,7 +5,7 @@ import './adminDashboard.css'; // Add your CSS file
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [movies, setMovies] = useState([]);
-  const [newUser, setNewUser] = useState({ username: '', email: '', password: '', role: 'User' });
+  const [newUser, setNewUser] = useState({ username: '', email: '', password: '', roles: 'User' });
   const [newMovie, setNewMovie] = useState({ title: '', imageUrl: '', overview: '' });
   const [activeTab, setActiveTab] = useState('addUser');
   const navigate = useNavigate();
@@ -158,8 +158,8 @@ export default function AdminDashboard() {
               onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
             />
             <select
-              value={newUser.role}
-              onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+              value={newUser.roles}
+              onChange={(e) => setNewUser({ ...newUser, roles: e.target.value })}
             >
               <option value="User">User</option>
               <option value="Admin">Admin</option>
