@@ -5,7 +5,7 @@ import './adminDashboard.css'; // Add your CSS file
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [movies, setMovies] = useState([]);
-  const [newUser, setNewUser] = useState({ username: '', email: '', password: '', roles: 'User' });
+  const [newUser, setNewUser] = useState({ username: '', email: '', password: '', roles: 'User', createdByAdmin: '1' }); // Default createdByAdmin to '1'
   const [newMovie, setNewMovie] = useState({ title: '', poster_path: '', overview: '', release_date: '', language: '', popularity: '', vote_average: '' });
   const [activeTab, setActiveTab] = useState('addUser');
   const navigate = useNavigate();
@@ -48,6 +48,7 @@ export default function AdminDashboard() {
       });
       if (response.ok) {
         fetchUsers(); // Refresh user list
+        setNewUser({ username: '', email: '', password: '', roles: 'User', createdByAdmin: '1' }); // Reset form
       } else {
         console.error('Failed to add user');
       }
